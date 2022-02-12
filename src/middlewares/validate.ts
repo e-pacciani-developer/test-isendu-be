@@ -30,3 +30,18 @@ export const validateParams =
       return res.status(400).send({ errors: issues });
     }
   };
+
+export const validateQueryParams =
+  (schema: AnyZodObject): any =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      req.query = await schema.parse(req.query);
+      return next();
+    } catch (error) {
+      const issues = (error as any).issues.map(
+        (issue: ZodIssue) => issue.path.join('.') + ' : ' + issue.message
+      );
+
+      return res.status(400).send({ errors: issues });
+    }
+  };

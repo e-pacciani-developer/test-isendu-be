@@ -1,4 +1,4 @@
-import { NotFoundError } from '../types/errors';
+import { NotFoundError } from '../models/errors';
 import { User } from '@prisma/client';
 import { db } from '../db';
 

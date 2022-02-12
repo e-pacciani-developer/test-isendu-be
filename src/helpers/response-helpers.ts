@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { NotFoundError } from '../types/errors';
+import { NotFoundError } from '../models/errors';
 
 export function sendError(
   res: Response,

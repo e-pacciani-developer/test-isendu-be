@@ -1,4 +1,4 @@
-import { GetRequest, PostRequest, TResponse } from '../types';
+import { GetRequest, PostRequest, TResponse } from '../models';
 import { sendError } from '../helpers/response-helpers';
 import { usersRepository } from '../repositories/repositories';
 import { User } from '@prisma/client';

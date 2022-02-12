@@ -1,7 +1,12 @@
 import { Appointment } from '@prisma/client';
 import { appointmentsRepository as repository } from '../repositories/repositories';
 import { sendError } from '../helpers/response-helpers';
-import { GetRequest, PostRequest, TResponse } from '../types';
+import {
+  GetAppointmentsDto,
+  GetRequest,
+  PostRequest,
+  TResponse,
+} from '../models';
 
 export const AppointmentsController = {
   getAll,
@@ -12,13 +17,16 @@ export const AppointmentsController = {
 };
 
 async function getAll(
-  req: GetRequest,
-  res: TResponse<Appointment[]>
-): Promise<TResponse<Appointment[]>> {
+  req: GetRequest<undefined, { page: number; limit: number }>,
+  res: TResponse<GetAppointmentsDto>
+): Promise<TResponse<GetAppointmentsDto>> {
   try {
-    const items = await repository.getAll();
+    const { page = 1, limit = Number.MAX_VALUE } = req.query;
 
-    return res.send(items);
+    // the cast is safe becouse the query params are validated before
+    const response = await repository.getAll(Number(page), Number(limit));
+
+    return res.send(response);
   } catch (e) {
     return sendError(res, e);
   }
@@ -63,23 +71,26 @@ async function getAll(
  * @returns The response with the generated appointment if slot is available, an error otherwise
  */
 async function create(
-  req: PostRequest<Appointment>,
+  req: PostRequest<Appointment, { userId: string }>,
   res: TResponse<Appointment>
 ): Promise<TResponse<Appointment>> {
   const appointment = req.body;
+  const { userId } = req.params;
+
+  console.log(appointment, userId);
 
   try {
     const slotIsAvailable = await repository.checkForAvailability(appointment);
 
     if (slotIsAvailable) {
-      const newItem = await repository.create(appointment);
+      const newItem = await repository.create(appointment, userId);
 
       return res.send(newItem);
     }
 
     return sendError(res, new Error('Slot is not available'));
   } catch (e) {
-    // TODO Log error
+    console.error(e);
     return sendError(res, e);
   }
 }

@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { UserSchema } from './user';
 
 const isISOString = (val: any): val is Date => {
   const d = new Date(val);
@@ -16,6 +15,6 @@ export const AppointmentSchema = z
     endAt: z
       .string({ required_error: 'EndAt field is required' })
       .refine(isISOString, 'EndAt date must be a valid ISO string'),
-    user: UserSchema.required(),
+    userId: z.string(),
   })
   .strip();
