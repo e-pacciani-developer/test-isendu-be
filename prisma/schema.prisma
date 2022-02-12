@@ -10,7 +10,8 @@ datasource db {
 
 model Appointment {
   id          String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  description String
+  type        String
+  notes       String?
   endAt       DateTime @db.Date
   startAt     DateTime @db.Date
   user        User @relation(fields: [userId], references: [id])

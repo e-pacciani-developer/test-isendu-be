@@ -8,22 +8,24 @@ export const appointmentsRouter = express.Router();
 
 appointmentsRouter.get(
   '/',
-  // validateQueryParams(
-  //   z.object({
-  //     page: z
-  //       .string()
-  //       .refine(
-  //         page => !isNaN(Number(page)),
-  //         'Please provide a valide page number'
-  //       ),
-  //     limit: z
-  //       .string()
-  //       .refine(
-  //         limit => !isNaN(Number(limit)),
-  //         'Please provide a valid limit number'
-  //       ),
-  //   })
-  // ),
+  validateQueryParams(
+    z.object({
+      page: z
+        .string()
+        .refine(
+          page => !isNaN(Number(page)),
+          'Please provide a valide page number'
+        ),
+      limit: z
+        .string()
+        .refine(
+          limit => !isNaN(Number(limit)),
+          'Please provide a valid limit number'
+        ),
+      userId: z.string(),
+      role: z.string(),
+    })
+  ),
   AppointmentsController.getAll
 );
 // appointmentsRouter.get('/:id', AppointmentsController.getSingle);
@@ -38,4 +40,4 @@ appointmentsRouter.post(
 //   validate(AppointmentSchema),
 //   AppointmentsController.update
 // );
-// appointmentsRouter.delete('/:id', AppointmentsController.remove);
+appointmentsRouter.delete('/:id', AppointmentsController.remove);

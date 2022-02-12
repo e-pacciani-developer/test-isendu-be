@@ -66,6 +66,26 @@ export class AppointmentsRepository {
     }
   }
 
+  async delete(id: string): Promise<boolean> {
+    try {
+      const appointment = await this.db.appointment.findUnique({
+        where: { id },
+      });
+
+      if (!appointment) {
+        throw new Error('Appointment not found');
+      }
+
+      await this.db.appointment.delete({
+        where: { id },
+      });
+
+      return true;
+    } catch (e) {
+      throw new Error('Error while deleting appointment');
+    }
+  }
+
   async checkForAvailability(appointment: Appointment): Promise<boolean> {
     try {
       const result = await this.db.appointment.findMany({

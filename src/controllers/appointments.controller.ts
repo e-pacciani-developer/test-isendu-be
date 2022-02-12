@@ -2,6 +2,7 @@ import { Appointment } from '@prisma/client';
 import { appointmentsRepository as repository } from '../repositories/repositories';
 import { sendError } from '../helpers/response-helpers';
 import {
+  DeleteRequest,
   GetAppointmentsDto,
   GetRequest,
   PostRequest,
@@ -14,7 +15,7 @@ export const AppointmentsController = {
   // getSingle,
   // update,
   create,
-  // remove,
+  remove,
 };
 
 async function getAll(
@@ -104,24 +105,30 @@ async function create(
       return res.send(newItem);
     }
 
-    return sendError(res, new Error('Slot is not available'));
+    return sendError(
+      res,
+      new Error(
+        'The slot you selected is not available, please select another hour'
+      )
+    );
   } catch (e) {
     console.error(e);
     return sendError(res, e);
   }
 }
 
-// async function remove(
-//   req: DeleteRequest<{ id: string }>,
-//   res: TResponse<boolean>
-// ): Promise<TResponse<boolean>> {
-//   const { id } = req.params;
+async function remove(
+  req: DeleteRequest<{ id: string }>,
+  res: TResponse<boolean>
+): Promise<TResponse<boolean>> {
+  const { id } = req.params;
 
-//   try {
-//     await repository.delete(id);
+  try {
+    await repository.delete(id);
 
-//     return res.send(true);
-//   } catch (e) {
-//     return sendError(res, e);
-//   }
-// }
+    return res.send(true);
+  } catch (e) {
+    console.error(e);
+    return sendError(res, e);
+  }
+}

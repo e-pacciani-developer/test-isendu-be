@@ -8,7 +8,8 @@ const isISOString = (val: any): val is Date => {
 export const AppointmentSchema = z
   .object({
     id: z.string().uuid().optional(),
-    description: z.string().optional(),
+    type: z.string(),
+    notes: z.string().optional(),
     startAt: z
       .string({ required_error: 'StartAt field is required' })
       .refine(isISOString, 'StartAt date must be a valid ISO string'),
