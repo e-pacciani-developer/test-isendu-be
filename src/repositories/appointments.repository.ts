@@ -1,5 +1,5 @@
 import { Appointment } from '@prisma/client';
-import { GetAppointmentsDto } from 'models';
+import { GetAppointmentsDto } from '../models';
 import { db } from '../db';
 
 export class AppointmentsRepository {

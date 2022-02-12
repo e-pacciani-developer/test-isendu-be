@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { app } from '../../app';
 import supertest from 'supertest';
 
@@ -7,16 +8,25 @@ describe('Appointments API', () => {
   });
 
   test('Should return all the appointments', async () => {
-    const response = await supertest(app).get('/api/appointments');
+    const limit = 10;
+    const response = await supertest(app).get(
+      `/api/appointments?page=1&limit=${limit}`
+    );
     expect(response.status).toBe(200);
     expect(response.body).toBeTruthy();
-    expect(response.body[0]).toEqual(
+    expect(response.body.data.length).toBeLessThanOrEqual(limit);
+    expect(response.body.data[0]).toEqual(
       //   expect.arrayContaining([
       expect.objectContaining({
         id: expect.any(String),
-        startAt: expect.any(Date),
+        startAt: expect.any(String),
         endAt: expect.any(String),
         description: expect.any(String),
+        userId: expect.any(String),
+        user: {
+          id: expect.any(String),
+          name: expect.any(String),
+        },
       })
       //   ])
     );
