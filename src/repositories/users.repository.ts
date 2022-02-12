@@ -5,6 +5,16 @@ import { db } from '../db';
 export class UsersRepository {
   public db = db;
 
+  async getAll(): Promise<User[]> {
+    try {
+      const users = await this.db.user.findMany();
+
+      return users;
+    } catch (e) {
+      throw new Error('Error while getting all users');
+    }
+  }
+
   async getOneById(id: string): Promise<User> {
     try {
       const user = await this.db.user.findUnique({

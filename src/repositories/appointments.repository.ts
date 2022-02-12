@@ -1,17 +1,26 @@
 import { Appointment } from '@prisma/client';
-import { GetAppointmentsDto } from '../models';
+import { GetAppointmentsDto, Role } from '../models';
 import { db } from '../db';
 
 export class AppointmentsRepository {
   public db = db;
 
-  async getAll(page: number, limit: number): Promise<GetAppointmentsDto> {
+  async getAll(
+    page: number,
+    limit: number,
+    role: Role,
+    userId: string
+  ): Promise<GetAppointmentsDto> {
+    // The adminisrator can see all the appointments so we don't need to filter by userId
+    const where = role === Role.ADMIN ? {} : { userId };
+
     // Query with pagination
     const qry = this.db.appointment.findMany({
       skip: (page - 1) * limit,
       take: limit,
       include: { user: true },
       orderBy: { startAt: 'asc' },
+      where,
     });
 
     // Count query

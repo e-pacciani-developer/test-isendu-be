@@ -1,4 +1,4 @@
-export enum Collection {
-  Appointments = 'appointments',
-  Users = 'users',
+export enum Role {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
 }

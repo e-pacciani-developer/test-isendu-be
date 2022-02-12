@@ -6,6 +6,8 @@ import { UserSchema } from '../models';
 
 export const usersRouter = express.Router();
 
+usersRouter.get('/', UserController.getAll);
+
 usersRouter.get(
   '/:id',
   validateParams(idParamValidator),

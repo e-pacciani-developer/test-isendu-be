@@ -5,6 +5,7 @@ import {
   GetAppointmentsDto,
   GetRequest,
   PostRequest,
+  Role,
   TResponse,
 } from '../models';
 
@@ -17,14 +18,29 @@ export const AppointmentsController = {
 };
 
 async function getAll(
-  req: GetRequest<undefined, { page: number; limit: number }>,
+  req: GetRequest<
+    undefined,
+    { page: number; limit: number; role: string; userId: string }
+  >,
   res: TResponse<GetAppointmentsDto>
 ): Promise<TResponse<GetAppointmentsDto>> {
   try {
-    const { page = 1, limit = Number.MAX_VALUE } = req.query;
+    // Here we pass the role and the userId as query params but tipically
+    // they would be passed in the JWT token for security reasons
+    const {
+      page = 1,
+      limit = Number.MAX_VALUE,
+      role = Role.USER,
+      userId,
+    } = req.query;
 
     // the cast is safe becouse the query params are validated before
-    const response = await repository.getAll(Number(page), Number(limit));
+    const response = await repository.getAll(
+      Number(page),
+      Number(limit),
+      role as Role,
+      userId
+    );
 
     return res.send(response);
   } catch (e) {

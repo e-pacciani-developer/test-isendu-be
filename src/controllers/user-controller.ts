@@ -4,9 +4,30 @@ import { usersRepository } from '../repositories/repositories';
 import { User } from '@prisma/client';
 
 export const UserController = {
+  getAll,
   getOneById,
   create,
 };
+
+/**
+ * Retrives all the users from the database
+ * @param req The request object, with no query or path params
+ * @param res The response object with the retrived list
+ * @returns The list of users retrieved if successful, an error otherwise
+ */
+async function getAll(
+  req: GetRequest,
+  res: TResponse<User[]>
+): Promise<TResponse<User[]>> {
+  try {
+    const users = await usersRepository.getAll();
+
+    return res.send(users);
+  } catch (e) {
+    console.log(e);
+    return sendError(res, e);
+  }
+}
 
 /**
  * Retrives a user by id
