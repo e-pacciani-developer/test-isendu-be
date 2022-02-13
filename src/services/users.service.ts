@@ -1,5 +1,5 @@
 import {} from '../models/errors';
-import { User } from '@prisma/client';
+import { prisma, User } from '@prisma/client';
 import { db } from '../db';
 import { NotFoundError, CreateUserDto } from '../models';
 
@@ -72,6 +72,30 @@ class UsersService {
     } catch (e) {
       console.log(e);
       throw new Error('Error while updating the user');
+    }
+  }
+
+  async delete(userId: string): Promise<boolean> {
+    try {
+      const userToDelete = await this.db.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!userToDelete) {
+        throw new NotFoundError('User not found');
+      }
+
+      // The related appointments will be deleted automatically
+      // by Prisma because the relation has the cascade delete option
+      // activated
+      await this.db.user.delete({
+        where: { id: userId },
+      });
+
+      return true;
+    } catch (e) {
+      console.error(e);
+      throw new Error('Error while deleting the user');
     }
   }
 }

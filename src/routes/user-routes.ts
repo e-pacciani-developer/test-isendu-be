@@ -16,3 +16,8 @@ usersRouter.get(
 
 usersRouter.put('/:id', validateBody(UpdateUserSchema), UsersController.update);
 usersRouter.post('/', validateBody(CreateUserSchema), UsersController.create);
+usersRouter.delete(
+  '/:id',
+  validateParams(idParamValidator),
+  UsersController.remove
+);

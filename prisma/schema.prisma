@@ -14,7 +14,7 @@ model Appointment {
   notes       String?
   endAt       DateTime @db.Date
   startAt     DateTime @db.Date
-  user        User @relation(fields: [userId], references: [id])
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String @db.ObjectId
 
   @@map("appointments")

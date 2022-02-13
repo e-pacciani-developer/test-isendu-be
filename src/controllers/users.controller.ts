@@ -1,4 +1,10 @@
-import { GetRequest, PostRequest, PutRequest, TResponse } from '../models';
+import {
+  DeleteRequest,
+  GetRequest,
+  PostRequest,
+  PutRequest,
+  TResponse,
+} from '../models';
 import { sendError } from '../helpers/response-helpers';
 import usersService from '../services/users.service';
 import { User } from '@prisma/client';
@@ -9,6 +15,7 @@ export const UsersController = {
   getOneById,
   create,
   update,
+  remove,
 };
 
 /**
@@ -86,6 +93,22 @@ async function update(
     const updatedUser = await usersService.update(id, appointment);
 
     return res.send(updatedUser);
+  } catch (e) {
+    console.error(e);
+    return sendError(res, e);
+  }
+}
+
+async function remove(
+  req: DeleteRequest<{ id: string }>,
+  res: TResponse<boolean>
+): Promise<TResponse<boolean>> {
+  const { id } = req.params;
+
+  try {
+    await usersService.delete(id);
+
+    return res.send(true);
   } catch (e) {
     console.error(e);
     return sendError(res, e);
