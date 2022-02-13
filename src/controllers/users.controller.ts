@@ -1,9 +1,9 @@
 import { GetRequest, PostRequest, TResponse } from '../models';
 import { sendError } from '../helpers/response-helpers';
-import { usersRepository } from '../repositories/repositories';
+import usersService from '../services/users.service';
 import { User } from '@prisma/client';
 
-export const UserController = {
+export const UsersController = {
   getAll,
   getOneById,
   create,
@@ -20,7 +20,7 @@ async function getAll(
   res: TResponse<User[]>
 ): Promise<TResponse<User[]>> {
   try {
-    const users = await usersRepository.getAll();
+    const users = await usersService.getAll();
 
     return res.send(users);
   } catch (e) {
@@ -42,10 +42,11 @@ async function getOneById(
   const { id } = req.params;
 
   try {
-    const user = await usersRepository.getOneById(id);
+    const user = await usersService.getOneById(id);
 
     return res.send(user);
   } catch (e) {
+    console.log(e);
     return sendError(res, e);
   }
 }
@@ -63,10 +64,11 @@ async function create(
   const user = req.body;
 
   try {
-    const newUser = await usersRepository.create(user);
+    const newUser = await usersService.create(user);
 
     return res.send(newUser);
   } catch (e) {
+    console.log(e);
     return sendError(res, e);
   }
 }

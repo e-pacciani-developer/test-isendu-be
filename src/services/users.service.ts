@@ -2,7 +2,7 @@ import { NotFoundError } from '../models/errors';
 import { User } from '@prisma/client';
 import { db } from '../db';
 
-export class UsersRepository {
+class UsersService {
   public db = db;
 
   async getAll(): Promise<User[]> {
@@ -43,3 +43,6 @@ export class UsersRepository {
     }
   }
 }
+
+const usersService = new UsersService();
+export default usersService;

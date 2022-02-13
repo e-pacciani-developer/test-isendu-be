@@ -1,5 +1,5 @@
 import { Appointment } from '@prisma/client';
-import { appointmentsRepository as repository } from '../repositories/repositories';
+import appoinmentService from '../services/appointments.service';
 import { sendError } from '../helpers/response-helpers';
 import {
   DeleteRequest,
@@ -12,8 +12,6 @@ import {
 
 export const AppointmentsController = {
   getAll,
-  // getSingle,
-  // update,
   create,
   remove,
 };
@@ -36,7 +34,7 @@ async function getAll(
     } = req.query;
 
     // the cast is safe becouse the query params are validated before
-    const response = await repository.getAll(
+    const response = await appoinmentService.getAll(
       Number(page),
       Number(limit),
       role as Role,
@@ -48,38 +46,6 @@ async function getAll(
     return sendError(res, e);
   }
 }
-
-// async function getSingle(
-//   req: GetRequest<{ id: string }>,
-//   res: TResponse<Appointment>
-// ): Promise<TResponse<Appointment>> {
-//   const { id } = req.params;
-
-//   try {
-//     const item = await repository.getDoc(id);
-
-//     return res.send(item);
-//   } catch (e) {
-//     return sendError(res, e);
-//   }
-// }
-
-// async function update(
-//   req: PutRequest<Appointment, { id: string }>,
-//   res: TResponse<Appointment>
-// ): Promise<TResponse<Appointment>> {
-//   const { id } = req.params;
-
-//   const todo = req.body;
-
-//   try {
-//     const updatedItem = await repository.update(id, todo);
-
-//     return res.send(updatedItem);
-//   } catch (e) {
-//     return sendError(res, e);
-//   }
-// }
 
 /**
  * Checks if the asked slot is available, if so creates a new appointment else returns an error
@@ -94,13 +60,13 @@ async function create(
   const appointment = req.body;
   const { userId } = req.params;
 
-  console.log(appointment, userId);
-
   try {
-    const slotIsAvailable = await repository.checkForAvailability(appointment);
+    const slotIsAvailable = await appoinmentService.checkForAvailability(
+      appointment
+    );
 
     if (slotIsAvailable) {
-      const newItem = await repository.create(appointment, userId);
+      const newItem = await appoinmentService.create(appointment, userId);
 
       return res.send(newItem);
     }
@@ -124,7 +90,7 @@ async function remove(
   const { id } = req.params;
 
   try {
-    await repository.delete(id);
+    await appoinmentService.delete(id);
 
     return res.send(true);
   } catch (e) {

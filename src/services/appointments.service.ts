@@ -2,7 +2,7 @@ import { Appointment } from '@prisma/client';
 import { GetAppointmentsDto, Role } from '../models';
 import { db } from '../db';
 
-export class AppointmentsRepository {
+class AppointmentsService {
   public db = db;
 
   async getAll(
@@ -106,3 +106,7 @@ export class AppointmentsRepository {
     }
   }
 }
+
+const appointmentService = new AppointmentsService();
+
+export default appointmentService;

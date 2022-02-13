@@ -1,17 +1,17 @@
 import express from 'express';
-import { UserController } from '../controllers/user-controller';
+import { UsersController } from '../controllers/users.controller';
 import { validateBody, validateParams } from '../middlewares';
 import { idParamValidator } from '../helpers/zod-validators';
 import { UserSchema } from '../models';
 
 export const usersRouter = express.Router();
 
-usersRouter.get('/', UserController.getAll);
+usersRouter.get('/', UsersController.getAll);
 
 usersRouter.get(
   '/:id',
   validateParams(idParamValidator),
-  UserController.getOneById
+  UsersController.getOneById
 );
 
-usersRouter.post('/', validateBody(UserSchema), UserController.create);
+usersRouter.post('/', validateBody(UserSchema), UsersController.create);
