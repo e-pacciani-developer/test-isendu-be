@@ -1,6 +1,7 @@
 import { NotFoundError } from '../models/errors';
 import { User } from '@prisma/client';
 import { db } from '../db';
+import { Role } from '../models';
 
 class UsersService {
   public db = db;
@@ -11,6 +12,7 @@ class UsersService {
 
       return users;
     } catch (e) {
+      console.error(e);
       throw new Error('Error while getting all users');
     }
   }
@@ -29,6 +31,7 @@ class UsersService {
 
       return user;
     } catch (e) {
+      console.error(e);
       throw new NotFoundError('User not found');
     }
   }

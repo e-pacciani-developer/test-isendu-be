@@ -2,7 +2,7 @@ import express from 'express';
 import { UsersController } from '../controllers/users.controller';
 import { validateBody, validateParams } from '../middlewares';
 import { idParamValidator } from '../helpers/zod-validators';
-import { UserSchema } from '../models';
+import { CreateUserSchema } from '../models';
 
 export const usersRouter = express.Router();
 
@@ -14,4 +14,4 @@ usersRouter.get(
   UsersController.getOneById
 );
 
-usersRouter.post('/', validateBody(UserSchema), UsersController.create);
+usersRouter.post('/', validateBody(CreateUserSchema), UsersController.create);

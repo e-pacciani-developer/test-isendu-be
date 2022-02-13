@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Role } from './enum';
 
 type ValidISOString = string;
 
@@ -7,12 +8,13 @@ const isISOString = (val: string): val is ValidISOString => {
   return !Number.isNaN(d.valueOf()) && d.toISOString() === val;
 };
 
-export const UserSchema = z
+export const CreateUserSchema = z
   .object({
-    id: z.string().optional(),
     name: z.string(),
     email: z.string().email(),
     address: z.string(),
+    phone: z.string(),
+    role: z.string().optional().default(Role.USER),
     dateOfBirth: z
       .string()
       .refine(isISOString, 'dateOfBirth must be a valid ISO string'),
