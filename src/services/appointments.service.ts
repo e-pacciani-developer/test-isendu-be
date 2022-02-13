@@ -20,7 +20,7 @@ class AppointmentsService {
       take: limit,
       include: { user: true },
       orderBy: { startAt: 'asc' },
-      where,
+      where: { startAt: { gte: new Date() }, ...where },
     });
 
     // Count query

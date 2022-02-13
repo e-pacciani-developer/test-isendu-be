@@ -65,18 +65,18 @@ async function create(
       appointment
     );
 
-    if (slotIsAvailable) {
-      const newItem = await appoinmentService.create(appointment, userId);
-
-      return res.send(newItem);
+    if (!slotIsAvailable) {
+      return sendError(
+        res,
+        new Error(
+          'The slot you selected is not available, please select another time'
+        )
+      );
     }
 
-    return sendError(
-      res,
-      new Error(
-        'The slot you selected is not available, please select another hour'
-      )
-    );
+    const newItem = await appoinmentService.create(appointment, userId);
+
+    return res.send(newItem);
   } catch (e) {
     console.error(e);
     return sendError(res, e);
