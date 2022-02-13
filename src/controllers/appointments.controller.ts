@@ -2,10 +2,12 @@ import { Appointment } from '@prisma/client';
 import appoinmentService from '../services/appointments.service';
 import { sendError } from '../helpers/response-helpers';
 import {
+  CreateAppointmentDto,
   DeleteRequest,
   GetAppointmentsDto,
   GetRequest,
   PostRequest,
+  PutRequest,
   Role,
   TResponse,
 } from '../models';
@@ -54,7 +56,7 @@ async function getAll(
  * @returns The response with the generated appointment if slot is available, an error otherwise
  */
 async function create(
-  req: PostRequest<Appointment, { userId: string }>,
+  req: PostRequest<CreateAppointmentDto, { userId: string }>,
   res: TResponse<Appointment>
 ): Promise<TResponse<Appointment>> {
   const appointment = req.body;

@@ -1,5 +1,5 @@
 import { Appointment } from '@prisma/client';
-import { GetAppointmentsDto, Role } from '../models';
+import { CreateAppointmentDto, GetAppointmentsDto, Role } from '../models';
 import { db } from '../db';
 
 class AppointmentsService {
@@ -41,7 +41,10 @@ class AppointmentsService {
     }
   }
 
-  async create(data: Appointment, userId: string): Promise<Appointment> {
+  async create(
+    data: CreateAppointmentDto,
+    userId: string
+  ): Promise<Appointment> {
     if (data.userId !== userId) {
       throw new Error('UserId does not match');
     }
@@ -86,7 +89,9 @@ class AppointmentsService {
     }
   }
 
-  async checkForAvailability(appointment: Appointment): Promise<boolean> {
+  async checkForAvailability(
+    appointment: CreateAppointmentDto
+  ): Promise<boolean> {
     try {
       const result = await this.db.appointment.findMany({
         where: {

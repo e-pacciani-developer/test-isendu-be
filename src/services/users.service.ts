@@ -1,7 +1,7 @@
-import { NotFoundError } from '../models/errors';
+import {} from '../models/errors';
 import { User } from '@prisma/client';
 import { db } from '../db';
-import { Role } from '../models';
+import { NotFoundError, CreateUserDto } from '../models';
 
 class UsersService {
   public db = db;
@@ -36,13 +36,42 @@ class UsersService {
     }
   }
 
-  async create(user: User): Promise<User> {
+  async create(user: CreateUserDto): Promise<User> {
     try {
       const newUser = await this.db.user.create({ data: user });
 
       return newUser;
     } catch (e) {
+      console.log(e);
       throw new Error('Error while creating new user');
+    }
+  }
+
+  async update(userId: string, user: User): Promise<User> {
+    if (user.id !== userId) {
+      throw new Error('User id does not match');
+    }
+
+    try {
+      const userToUpdate = await this.db.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!userToUpdate) {
+        throw new NotFoundError('User not found');
+      }
+
+      const { id, ...userData } = user;
+
+      const updatedUser = await this.db.user.update({
+        where: { id },
+        data: userData,
+      });
+
+      return updatedUser;
+    } catch (e) {
+      console.log(e);
+      throw new Error('Error while updating the user');
     }
   }
 }

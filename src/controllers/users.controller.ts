@@ -1,12 +1,14 @@
-import { GetRequest, PostRequest, TResponse } from '../models';
+import { GetRequest, PostRequest, PutRequest, TResponse } from '../models';
 import { sendError } from '../helpers/response-helpers';
 import usersService from '../services/users.service';
 import { User } from '@prisma/client';
+import { CreateUserDto } from '../models/dto/users-dto';
 
 export const UsersController = {
   getAll,
   getOneById,
   create,
+  update,
 };
 
 /**
@@ -58,7 +60,7 @@ async function getOneById(
  * @returns The created user if successfull, an error otherwise
  */
 async function create(
-  req: PostRequest<User>,
+  req: PostRequest<CreateUserDto>,
   res: TResponse<User>
 ): Promise<TResponse<User>> {
   const user = req.body;
@@ -69,6 +71,23 @@ async function create(
     return res.send(newUser);
   } catch (e) {
     console.log(e);
+    return sendError(res, e);
+  }
+}
+
+async function update(
+  req: PutRequest<User, { id: string }>,
+  res: TResponse<User>
+): Promise<TResponse<User>> {
+  const { id } = req.params;
+  const appointment = req.body;
+
+  try {
+    const updatedUser = await usersService.update(id, appointment);
+
+    return res.send(updatedUser);
+  } catch (e) {
+    console.error(e);
     return sendError(res, e);
   }
 }
