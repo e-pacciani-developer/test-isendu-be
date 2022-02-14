@@ -14,7 +14,11 @@ app.listen(PORT, () => console.log('Example app listening on port ' + PORT));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
+app.use(function (
+  err: { status: number; message: string },
+  req: Request,
+  res: Response
+) {
   return res.status(err.status).send({ message: err.message });
 });
 

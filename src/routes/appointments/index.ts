@@ -1,8 +1,13 @@
-import { validateBody, validateQueryParams } from '../../middlewares';
+import {
+  validateBody,
+  validateParams,
+  validateQueryParams,
+} from '../../middlewares';
 import { AppointmentSchema } from '../../models';
 import express from 'express';
 import { AppointmentsController } from '../../controllers/appointments.controller';
 import { z } from 'zod';
+import { idParamValidator } from 'helpers/zod-validators';
 
 export const appointmentsRouter = express.Router();
 
@@ -28,16 +33,14 @@ appointmentsRouter.get(
   ),
   AppointmentsController.getAll
 );
-// appointmentsRouter.get('/:id', AppointmentsController.getSingle);
 appointmentsRouter.post(
   '/:userId',
   validateBody(AppointmentSchema),
   AppointmentsController.create
 );
 
-// appointmentsRouter.put(
-//   '/:id',
-//   validate(AppointmentSchema),
-//   AppointmentsController.update
-// );
-appointmentsRouter.delete('/:id', AppointmentsController.remove);
+appointmentsRouter.delete(
+  '/:id',
+  validateParams(idParamValidator),
+  AppointmentsController.remove
+);

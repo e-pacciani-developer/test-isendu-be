@@ -18,10 +18,17 @@ export const AppointmentsController = {
   remove,
 };
 
+/**
+ * Retrives the list of appointments filtered by the given parameters. If page of limit is not provided, it will return all the appointments
+ * @param req The request with the filters, page and limit for pagination implementation,
+ *  role and userId for filtering the appointments (the user can only see his own appointments)
+ * @param res The response object containing the list of appointments and a flag "hasMore" to indicate if there are more appointments to be loaded
+ * @returns A list of appointments filtered by the given parameters and a flag "hasMore" to indicate if there are more appointments to be loaded
+ */
 async function getAll(
   req: GetRequest<
     undefined,
-    { page: number; limit: number; role: string; userId: string }
+    { page: number; limit: number; role: Role; userId: string }
   >,
   res: TResponse<GetAppointmentsDto>
 ): Promise<TResponse<GetAppointmentsDto>> {
@@ -35,7 +42,7 @@ async function getAll(
       userId,
     } = req.query;
 
-    // the cast is safe becouse the query params are validated before
+    // the cast is safe because the query params are validated before reaching this point
     const response = await appoinmentService.getAll(
       Number(page),
       Number(limit),
@@ -45,14 +52,14 @@ async function getAll(
 
     return res.send(response);
   } catch (e) {
-    return sendError(res, e);
+    return sendError(res, e as Error);
   }
 }
 
 /**
  * Checks if the asked slot is available, if so creates a new appointment else returns an error
- * @param req Appointment data
- * @param res Generated appointment
+ * @param req The request with the appointment data and as path param the id of the user that will be the associated with the appointment
+ * @param res The response object containing the created appointment or a BadRequest error if the slot is not available
  * @returns The response with the generated appointment if slot is available, an error otherwise
  */
 async function create(
@@ -63,10 +70,12 @@ async function create(
   const { userId } = req.params;
 
   try {
+    // Check if the asked slot is available
     const slotIsAvailable = await appoinmentService.checkForAvailability(
       appointment
     );
 
+    // If the slot is not available,return an error
     if (!slotIsAvailable) {
       return sendError(
         res,
@@ -76,19 +85,26 @@ async function create(
       );
     }
 
-    const newItem = await appoinmentService.create(appointment, userId);
+    // Create and return the new appointment
+    const newAppointment = await appoinmentService.create(appointment, userId);
 
-    return res.send(newItem);
+    return res.send(newAppointment);
   } catch (e) {
     console.error(e);
-    return sendError(res, e);
+    return sendError(res, e as Error);
   }
 }
 
+/**
+ * Deletes an appointment by the given id
+ * @param req The request with the id of the appointment to be deleted
+ * @param res The resonse object containing true if the appointment was deleted or a BadRequest error if it was not
+ * @returns True if the appointment was deleted, a BadRequest error if it was not
+ */
 async function remove(
   req: DeleteRequest<{ id: string }>,
-  res: TResponse<boolean>
-): Promise<TResponse<boolean>> {
+  res: TResponse<true>
+): Promise<TResponse<true>> {
   const { id } = req.params;
 
   try {
@@ -97,6 +113,6 @@ async function remove(
     return res.send(true);
   } catch (e) {
     console.error(e);
-    return sendError(res, e);
+    return sendError(res, e as Error);
   }
 }

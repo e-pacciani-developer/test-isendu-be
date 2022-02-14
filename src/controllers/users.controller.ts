@@ -22,7 +22,7 @@ export const UsersController = {
  * Retrives all the users from the database
  * @param req The request object, with no query or path params
  * @param res The response object with the retrived list
- * @returns The list of users retrieved if successful, an error otherwise
+ * @returns A promise with the response containingthe  list of users retrieved if successful, a BadRequest error otherwise
  */
 async function getAll(
   req: GetRequest,
@@ -34,15 +34,15 @@ async function getAll(
     return res.send(users);
   } catch (e) {
     console.log(e);
-    return sendError(res, e);
+    return sendError(res, e as Error);
   }
 }
 
 /**
  * Retrives a user by id
- * @param req The id of the user to retrieve
- * @param res The response object with the retrieved user
- * @returns The user retrieved if successful, an error otherwise
+ * @param req The request containing the id of the user to retrieve
+ * @param res The response object with the retrieved user or an error if not found
+ * @returns A promise with the response containing user retrieved if successful, a NotFound error if not found, a BadRequest error otherwise
  */
 async function getOneById(
   req: GetRequest<{ id: string }>,
@@ -56,7 +56,7 @@ async function getOneById(
     return res.send(user);
   } catch (e) {
     console.log(e);
-    return sendError(res, e);
+    return sendError(res, e as Error);
   }
 }
 
@@ -64,7 +64,7 @@ async function getOneById(
  * Creates a new user
  * @param req The user to create
  * @param res The response object with the created user
- * @returns The created user if successfull, an error otherwise
+ * @returns A promise with the response containing the created user if successfull, a BadRequest error otherwise
  */
 async function create(
   req: PostRequest<CreateUserDto>,
@@ -78,10 +78,16 @@ async function create(
     return res.send(newUser);
   } catch (e) {
     console.log(e);
-    return sendError(res, e);
+    return sendError(res, e as Error);
   }
 }
 
+/**
+ * Updates the data of a user
+ * @param req The request containing the user data to update in the body and the id of the user to update as path param
+ * @param res The response object with the updated user if successful, a BadRequest error otherwise
+ * @returns A promise with the response containing the updated user if successful, a BadRequest error otherwise
+ */
 async function update(
   req: PutRequest<User, { id: string }>,
   res: TResponse<User>
@@ -95,10 +101,16 @@ async function update(
     return res.send(updatedUser);
   } catch (e) {
     console.error(e);
-    return sendError(res, e);
+    return sendError(res, e as Error);
   }
 }
 
+/**
+ * Deletes the user with the given id and all the appointments associated with it
+ * @param req The request containing the id of the user to delete
+ * @param res The response object with true if the user was deleted or a BadRequest error if it was not
+ * @returns A promise with the response containing true if the user was deleted, a BadRequest error otherwise
+ */
 async function remove(
   req: DeleteRequest<{ id: string }>,
   res: TResponse<boolean>
@@ -111,6 +123,6 @@ async function remove(
     return res.send(true);
   } catch (e) {
     console.error(e);
-    return sendError(res, e);
+    return sendError(res, e as Error);
   }
 }
