@@ -4,11 +4,13 @@ import { db } from '../db';
 import { NotFoundError, CreateUserDto } from '../models';
 
 class UsersService {
-  public db = db;
-
+  /**
+   * Retrives the list of all the users
+   * @returns A promise with the list of users, throws an error if something goes wrong
+   */
   async getAll(): Promise<User[]> {
     try {
-      const users = await this.db.user.findMany();
+      const users = await db.user.findMany();
 
       return users;
     } catch (e) {
@@ -17,9 +19,14 @@ class UsersService {
     }
   }
 
+  /**
+   * Retrives a user by its id
+   * @param id The id of the user to retrieve
+   * @returns A promise with the user retrieved if successful, a NotFound error if not found, a BadRequest error otherwise
+   */
   async getOneById(id: string): Promise<User> {
     try {
-      const user = await this.db.user.findUnique({
+      const user = await db.user.findUnique({
         where: {
           id,
         },
@@ -36,9 +43,14 @@ class UsersService {
     }
   }
 
+  /**
+   * Creates a new user
+   * @param user The data of the user to create
+   * @returns A promise with the created user if successful, a BadRequest error otherwise
+   */
   async create(user: CreateUserDto): Promise<User> {
     try {
-      const newUser = await this.db.user.create({ data: user });
+      const newUser = await db.user.create({ data: user });
 
       return newUser;
     } catch (e) {
@@ -47,13 +59,20 @@ class UsersService {
     }
   }
 
+  /**
+   * Updates a user data
+   * @param userId The id of the user to update
+   * @param user The data of the user to update
+   * @returns A Promise with the updated user if successful, a NotFound error if not found, a BadRequest error otherwise
+   */
   async update(userId: string, user: User): Promise<User> {
+    // Check if the ids match
     if (user.id !== userId) {
       throw new Error('User id does not match');
     }
 
     try {
-      const userToUpdate = await this.db.user.findUnique({
+      const userToUpdate = await db.user.findUnique({
         where: { id: userId },
       });
 
@@ -61,9 +80,10 @@ class UsersService {
         throw new NotFoundError('User not found');
       }
 
+      // Remove the id propery from the user to update to avoid Prisma conflicting ids errors
       const { id, ...userData } = user;
 
-      const updatedUser = await this.db.user.update({
+      const updatedUser = await db.user.update({
         where: { id },
         data: userData,
       });
@@ -75,9 +95,14 @@ class UsersService {
     }
   }
 
-  async delete(userId: string): Promise<boolean> {
+  /**
+   * Deletes a user and all the appointments associated to it
+   * @param userId The id of the user to delete
+   * @returns A Promise containig true if successful, a NotFound error if not found, a BadRequest error otherwise
+   */
+  async delete(userId: string): Promise<true> {
     try {
-      const userToDelete = await this.db.user.findUnique({
+      const userToDelete = await db.user.findUnique({
         where: { id: userId },
       });
 
@@ -88,7 +113,7 @@ class UsersService {
       // The related appointments will be deleted automatically
       // by Prisma because the relation has the cascade delete option
       // activated
-      await this.db.user.delete({
+      await db.user.delete({
         where: { id: userId },
       });
 

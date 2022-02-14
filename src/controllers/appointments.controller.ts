@@ -1,5 +1,4 @@
 import { Appointment } from '@prisma/client';
-import appoinmentService from '../services/appointments.service';
 import { sendError } from '../helpers/response-helpers';
 import {
   CreateAppointmentDto,
@@ -7,10 +6,10 @@ import {
   GetAppointmentsDto,
   GetRequest,
   PostRequest,
-  PutRequest,
   Role,
   TResponse,
 } from '../models';
+import appoinmentService from '../services/appointments.service';
 
 export const AppointmentsController = {
   getAll,
