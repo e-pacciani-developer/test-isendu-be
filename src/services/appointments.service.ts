@@ -1,5 +1,10 @@
 import { Appointment } from '@prisma/client';
-import { CreateAppointmentDto, GetAppointmentsDto, Role } from '../models';
+import {
+  CreateAppointmentDto,
+  GetAppointmentsDto,
+  NotFoundError,
+  Role,
+} from '../models';
 import db from '../db';
 
 class AppointmentsService {
@@ -42,8 +47,35 @@ class AppointmentsService {
 
       return { data, hasMore };
     } catch (e) {
-      console.error(e);
-      throw new Error('Error while getting all appointments');
+      if (e instanceof NotFoundError) {
+        throw e;
+      }
+      throw new Error((e as Error).message);
+    }
+  }
+
+  async getAppointmentsForCalendar(
+    start: Date,
+    end: Date
+  ): Promise<Appointment[]> {
+    const qry = db.appointment.findMany({
+      where: {
+        startAt: {
+          gte: start,
+          lte: end,
+        },
+      },
+    });
+
+    try {
+      const appointments = await qry;
+
+      return appointments;
+    } catch (e) {
+      if (e instanceof NotFoundError) {
+        throw e;
+      }
+      throw new Error((e as Error).message);
     }
   }
 
@@ -76,8 +108,54 @@ class AppointmentsService {
 
       return appointment;
     } catch (e) {
-      console.error(e);
-      throw new Error('Error while creating new appointment');
+      if (e instanceof NotFoundError) {
+        throw e;
+      }
+      throw new Error((e as Error).message);
+    }
+  }
+
+  /**
+   * Updates appointment, checking if the user and the appointment requested exist
+   * @param data The appointment's data o update
+   * @param userId The id of the user that will be the associated with the appointment
+   * @returns The appointment updated or an error if the user doesn't exist or the some values in the data are invalid
+   */
+  async update(data: Appointment, appointmentId: string): Promise<Appointment> {
+    try {
+      const user = await db.user.findUnique({
+        where: { id: data.userId },
+      });
+
+      if (!user) {
+        throw new NotFoundError('User not found');
+      }
+
+      if (data.id !== appointmentId) {
+        throw new Error('Appointments ids do not match');
+      }
+
+      const appointmentToUpdate = await db.appointment.findUnique({
+        where: { id: appointmentId },
+      });
+
+      if (!appointmentToUpdate) {
+        throw new NotFoundError('Appointment not found');
+      }
+
+      const { id, ...appointmentData } = data;
+
+      const appointment = await db.appointment.update({
+        where: { id },
+        data: appointmentData,
+      });
+
+      return appointment;
+    } catch (e) {
+      if (e instanceof NotFoundError) {
+        throw e;
+      }
+      throw new Error((e as Error).message);
     }
   }
 
@@ -102,7 +180,10 @@ class AppointmentsService {
 
       return true;
     } catch (e) {
-      throw new Error('Error while deleting appointment');
+      if (e instanceof NotFoundError) {
+        throw e;
+      }
+      throw new Error((e as Error).message);
     }
   }
 
@@ -128,8 +209,10 @@ class AppointmentsService {
 
       return result.length === 0;
     } catch (e) {
-      console.error(e);
-      throw new Error('Error while checking for availability');
+      if (e instanceof NotFoundError) {
+        throw e;
+      }
+      throw new Error((e as Error).message);
     }
   }
 }

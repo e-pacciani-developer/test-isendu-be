@@ -14,7 +14,9 @@ import appoinmentService from '../services/appointments.service';
 export const AppointmentsController = {
   getAll,
   create,
+  update,
   remove,
+  getCalendar,
 };
 
 /**
@@ -47,6 +49,24 @@ async function getAll(
       Number(limit),
       role as Role,
       userId
+    );
+
+    return res.send(response);
+  } catch (e) {
+    return sendError(res, e as Error);
+  }
+}
+
+async function getCalendar(
+  req: GetRequest<undefined, { from: string; to: string }>,
+  res: TResponse<Appointment[]>
+): Promise<TResponse<Appointment[]>> {
+  try {
+    const { from, to } = req.query;
+
+    const response = await appoinmentService.getAppointmentsForCalendar(
+      new Date(from),
+      new Date(to)
     );
 
     return res.send(response);
@@ -88,6 +108,30 @@ async function create(
     const newAppointment = await appoinmentService.create(appointment, userId);
 
     return res.send(newAppointment);
+  } catch (e) {
+    console.error(e);
+    return sendError(res, e as Error);
+  }
+}
+
+/**
+ * Updates an appointment by the given id
+ * @param req The request with the appointment data and as path param the id of the user that will be the associated with the appointment
+ * @param res The response object containing the created appointment or a BadRequest error if the slot is not available
+ * @returns The response with the update appointment if successful, an error otherwise
+ */
+async function update(
+  req: PostRequest<Appointment, { id: string }>,
+  res: TResponse<Appointment>
+): Promise<TResponse<Appointment>> {
+  const appointmentToUpdate = req.body;
+  const { id } = req.params;
+
+  try {
+    // update the appointment
+    const appointment = await appoinmentService.update(appointmentToUpdate, id);
+
+    return res.send(appointment);
   } catch (e) {
     console.error(e);
     return sendError(res, e as Error);

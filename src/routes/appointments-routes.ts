@@ -33,10 +33,19 @@ appointmentsRouter.get(
   ),
   AppointmentsController.getAll
 );
+
+appointmentsRouter.get('/calendar', AppointmentsController.getCalendar);
+
 appointmentsRouter.post(
   '/:userId',
   validateBody(AppointmentSchema),
   AppointmentsController.create
+);
+
+appointmentsRouter.put(
+  '/:id',
+  validateBody(AppointmentSchema),
+  AppointmentsController.update
 );
 
 appointmentsRouter.delete(

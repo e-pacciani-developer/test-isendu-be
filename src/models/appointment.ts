@@ -9,6 +9,7 @@ const isISOString = (val: string): val is ValidISOString => {
 
 export const AppointmentSchema = z
   .object({
+    id: z.string().optional(),
     type: z.string(),
     notes: z.string().optional(),
     startAt: z

@@ -8,8 +8,8 @@ describe('Appointments API', () => {
     const appointments: Appointment[] = [
       {
         id: '6207969653ac4f2ab1673ebe',
-        endAt: '2022-02-15T22:00:00.000+00:00',
-        startAt: '2022-02-15T20:00:00.000+00:00',
+        endAt: new Date('2020-06-01T12:00:00'),
+        startAt: new Date('2020-06-01T11:00:00'),
         userId: '6206a047714387b96ee2af7f',
         notes: 'Un appuntamento qualsiasi',
         type: 'Teeth Cleaning',
@@ -30,8 +30,8 @@ describe('Appointments API', () => {
     const appointments: Appointment[] = [
       {
         id: '6207969653ac4f2ab1673ebe',
-        endAt: '2022-02-15T22:00:00.000+00:00',
-        startAt: '2022-02-15T20:00:00.000+00:00',
+        endAt: new Date('2020-06-01T12:00:00'),
+        startAt: new Date('2020-06-01T11:00:00'),
         userId: '6206a047714387b96ee2af7f',
         notes: 'Un appuntamento qualsiasi',
         type: 'Teeth Cleaning',
@@ -54,8 +54,8 @@ describe('Appointments API', () => {
   test('Should create an appointment', async () => {
     const newAppointment: Appointment = {
       id: '6207969653ac4f2ab1673ebe',
-      endAt: '2022-02-15T22:00:00.000+00:00',
-      startAt: '2022-02-15T20:00:00.000+00:00',
+      endAt: new Date('2020-06-01T12:00:00'),
+      startAt: new Date('2020-06-01T11:00:00'),
       userId: '6206a047714387b96ee2af7f',
       notes: 'New appointment',
       type: 'Teeth Cleaning',
@@ -81,11 +81,39 @@ describe('Appointments API', () => {
     ).resolves.toEqual(newAppointment);
   });
 
+  it('Should update an appointment', async () => {
+    const appointment: Appointment = {
+      id: '6207969653ac4f2ab1673ebe',
+      endAt: new Date('2020-06-01T12:00:00'),
+      startAt: new Date('2020-06-01T11:00:00'),
+      userId: '6206a047714387b96ee2af7f',
+      notes: 'New appointment',
+      type: 'Teeth Cleaning',
+    };
+
+    const user: User = {
+      id: '6206a047714387b96ee2af7f',
+      name: 'Mario Rossi',
+      email: 'm.r@gmail.com',
+      address: '',
+      dateOfBirth: new Date(),
+      phone: '',
+      role: Role.USER,
+    };
+
+    prismaMock.user.findUnique.mockResolvedValue(user);
+    prismaMock.appointment.update.mockResolvedValue(appointment);
+
+    expect(
+      appointmentService.create(appointment, '6206a047714387b96ee2af7f')
+    ).resolves.toEqual(appointment);
+  });
+
   test('Should delete an appointment', async () => {
     const appoitnmentToDelete: Appointment = {
       id: '6207969653ac4f2ab1673ebe',
-      endAt: '2022-02-15T22:00:00.000+00:00',
-      startAt: '2022-02-15T20:00:00.000+00:00',
+      endAt: new Date('2020-06-01T12:00:00'),
+      startAt: new Date('2020-06-01T11:00:00'),
       userId: '6206a047714387b96ee2af7f',
       notes: 'Aappointment to update',
       type: 'Teeth Cleaning',
@@ -102,8 +130,8 @@ describe('Appointments API', () => {
   test('Should return false if the asked slot is not available', async () => {
     const appoitnment: Appointment = {
       id: '6207969653ac4f2ab1673ebe',
-      endAt: '2022-02-15T22:00:00.000+00:00',
-      startAt: '2022-02-15T20:00:00.000+00:00',
+      endAt: new Date('2020-06-01T12:00:00'),
+      startAt: new Date('2020-06-01T11:00:00'),
       userId: '6206a047714387b96ee2af7f',
       notes: 'Aappointment to update',
       type: 'Teeth Cleaning',
@@ -111,8 +139,8 @@ describe('Appointments API', () => {
 
     const overlappingAppointment: Appointment = {
       id: '6207969653ac4f2ab1673ebe',
-      endAt: '2022-02-15T23:00:00.000+00:00',
-      startAt: '2022-02-15T21:00:00.000+00:00',
+      endAt: new Date('2020-06-01T12:00:00'),
+      startAt: new Date('2020-06-01T11:00:00'),
       userId: '6206a047714387b96ee2af7f',
       notes: 'Aappointment to update',
       type: 'Teeth Cleaning',
@@ -128,8 +156,8 @@ describe('Appointments API', () => {
   test('Should return true if the asked slot is available', async () => {
     const appoitnment: Appointment = {
       id: '6207969653ac4f2ab1673ebe',
-      endAt: '2022-02-15T22:00:00.000+00:00',
-      startAt: '2022-02-15T20:00:00.000+00:00',
+      endAt: new Date('2020-06-01T12:00:00'),
+      startAt: new Date('2020-06-01T11:00:00'),
       userId: '6206a047714387b96ee2af7f',
       notes: 'Aappointment to update',
       type: 'Teeth Cleaning',
