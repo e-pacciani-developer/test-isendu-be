@@ -1,2 +1,2 @@
 export * from './user-routes';
-export * from './appointments';
+export * from './appointments-routes';

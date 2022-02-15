@@ -2,12 +2,12 @@ import {
   validateBody,
   validateParams,
   validateQueryParams,
-} from '../../middlewares';
-import { AppointmentSchema } from '../../models';
+} from '../middlewares';
+import { AppointmentSchema } from '../models';
 import express from 'express';
-import { AppointmentsController } from '../../controllers/appointments.controller';
+import { AppointmentsController } from '../controllers/appointments.controller';
 import { z } from 'zod';
-import { idParamValidator } from '../../helpers/zod-validators';
+import { idParamValidator } from '../helpers/zod-validators';
 
 export const appointmentsRouter = express.Router();
 
