@@ -106,4 +106,12 @@ describe('Users service', () => {
       true
     );
   });
+
+  it("Should throw an error if attempting to delete a user that doesn't exists", async () => {
+    prismaMock.user.findUnique.mockRejectedValueOnce(new Error());
+
+    expect(
+      usersService.delete('6206a047714387b96ee2af7f')
+    ).rejects.toThrowError();
+  });
 });
