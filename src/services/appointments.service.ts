@@ -1,6 +1,6 @@
 import { Appointment } from '@prisma/client';
 import { CreateAppointmentDto, GetAppointmentsDto, Role } from '../models';
-import { db } from '../db';
+import db from '../db';
 
 class AppointmentsService {
   /**

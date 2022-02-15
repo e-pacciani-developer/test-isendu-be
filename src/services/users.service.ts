@@ -1,5 +1,5 @@
 import { prisma, User } from '@prisma/client';
-import { db } from '../db';
+import db from '../db';
 import { NotFoundError, CreateUserDto } from '../models';
 
 class UsersService {
