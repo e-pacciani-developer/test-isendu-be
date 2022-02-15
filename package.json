@@ -34,7 +34,7 @@
     "start": "node dist/src/app.js",
     "dev": "nodemon -r dotenv/config src/app.ts",
     "build": "tsc --project .",
-    "test": "jest",
+    "test": "jest --verbose",
     "test:watch": "jest --watch"
   },
   "keywords": [],
