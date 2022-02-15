@@ -1,4 +1,3 @@
-import {} from '../models/errors';
 import { prisma, User } from '@prisma/client';
 import { db } from '../db';
 import { NotFoundError, CreateUserDto } from '../models';
@@ -6,11 +5,14 @@ import { NotFoundError, CreateUserDto } from '../models';
 class UsersService {
   /**
    * Retrives the list of all the users
+   * @param nameFilter A filter to apply on the name of the users
    * @returns A promise with the list of users, throws an error if something goes wrong
    */
-  async getAll(): Promise<User[]> {
+  async getAll(nameFilter?: string): Promise<User[]> {
     try {
-      const users = await db.user.findMany();
+      const users = await db.user.findMany({
+        where: { name: { contains: nameFilter, mode: 'insensitive' } },
+      });
 
       return users;
     } catch (e) {

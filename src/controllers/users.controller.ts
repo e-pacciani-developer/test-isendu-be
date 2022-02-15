@@ -25,11 +25,13 @@ export const UsersController = {
  * @returns A promise with the response containingthe  list of users retrieved if successful, a BadRequest error otherwise
  */
 async function getAll(
-  req: GetRequest,
+  req: GetRequest<{}, { name: string }>,
   res: TResponse<User[]>
 ): Promise<TResponse<User[]>> {
   try {
-    const users = await usersService.getAll();
+    const { name } = req.query;
+
+    const users = await usersService.getAll(name);
 
     return res.send(users);
   } catch (e) {
