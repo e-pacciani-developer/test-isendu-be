@@ -27,5 +27,11 @@ describe('Appointments routes', () => {
     ).resolves.toHaveProperty('status', 415);
   });
 
-  it('Should throw an error if the i');
+  it('Should throw an error if the id param is not a valid uuid', async () => {
+    const id = 'abc';
+
+    expect(
+      supertest(app).delete(`/api/appointments/${id}`)
+    ).resolves.toHaveProperty('status', 400);
+  });
 });
