@@ -1,6 +1,6 @@
 # Test Isendu (Back end)
 
-This is a test project that represents a web app for managing the appointments and the user for a dental office.
+This is a test project that represents a web app for managing the appointments and the users for a dental office.
 
 To run the project enter in your terminal
 
