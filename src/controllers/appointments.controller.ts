@@ -16,7 +16,7 @@ export const AppointmentsController = {
   create,
   update,
   remove,
-  getCalendar,
+  getCalendar: getAppointmentsForCalendar,
 };
 
 /**
@@ -57,7 +57,13 @@ async function getAll(
   }
 }
 
-async function getCalendar(
+/**
+ * Retrives a list of appointments based on the date filters passed in the request
+ * @param req The request object with the date filters as query parameters
+ * @param res The response object containing the list of appointments or an error
+ * @returns The list of appointments for the requested dates or an error
+ */
+async function getAppointmentsForCalendar(
   req: GetRequest<undefined, { from: string; to: string }>,
   res: TResponse<Appointment[]>
 ): Promise<TResponse<Appointment[]>> {

@@ -11,7 +11,7 @@ describe('Appointments API', () => {
         endAt: new Date('2020-06-01T12:00:00'),
         startAt: new Date('2020-06-01T11:00:00'),
         userId: '6206a047714387b96ee2af7f',
-        notes: 'Un appuntamento qualsiasi',
+        notes: 'Random appointment',
         type: 'Teeth Cleaning',
       },
     ];
@@ -24,7 +24,37 @@ describe('Appointments API', () => {
       data: appointments,
       hasMore: false,
     });
-  }, 300000);
+  });
+
+  test('Should return an appointments list for calendar', async () => {
+    const appointments: Appointment[] = [
+      {
+        id: '6207969653ac4f2ab1673ebe',
+        endAt: new Date('2020-06-01T12:00:00'),
+        startAt: new Date('2020-06-01T11:00:00'),
+        userId: '6206a047714387b96ee2af7f',
+        notes: 'Random appointment',
+        type: 'Teeth Cleaning',
+      },
+      {
+        id: '6207969653ac4f2ab1673ebk',
+        endAt: new Date('2020-06-02T12:00:00'),
+        startAt: new Date('2020-06-02T11:00:00'),
+        userId: '6206a047714387b96ee2af7f',
+        notes: 'Random appointment 2',
+        type: 'Teeth Cleaning',
+      },
+    ];
+
+    prismaMock.appointment.findMany.mockResolvedValue(appointments);
+
+    expect(
+      appointmentService.getAppointmentsForCalendar(
+        new Date(2022, 5, 1),
+        new Date(2022, 5, 2)
+      )
+    ).resolves.toEqual(appointments);
+  });
 
   test('Should correctly paginate the response', async () => {
     const appointments: Appointment[] = [
@@ -33,7 +63,7 @@ describe('Appointments API', () => {
         endAt: new Date('2020-06-01T12:00:00'),
         startAt: new Date('2020-06-01T11:00:00'),
         userId: '6206a047714387b96ee2af7f',
-        notes: 'Un appuntamento qualsiasi',
+        notes: 'Random appointment',
         type: 'Teeth Cleaning',
       },
     ];

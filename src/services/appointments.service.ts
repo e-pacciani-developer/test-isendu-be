@@ -54,6 +54,12 @@ class AppointmentsService {
     }
   }
 
+  /**
+   * Retrives the list of appointments that start between the start and an end date
+   * @param start The start date to filter the appointments
+   * @param end THe end date to filter the appointments
+   * @returns A list of appointments
+   */
   async getAppointmentsForCalendar(
     start: Date,
     end: Date
