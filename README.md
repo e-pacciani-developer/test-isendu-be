@@ -2,9 +2,14 @@
 
 This is a test project that represents a web app for managing the appointments and the user for a dental office.
 
-To run the project run in your terminal
+To run the project enter in your terminal
 
 ```sh
 npm i
 npm run dev
+```
+
+To run test enter in your terminal
+```sh
+npm run test
 ```
